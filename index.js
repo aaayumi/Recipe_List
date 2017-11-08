@@ -7,6 +7,7 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.get('/', (req,res) => {
 	res.json("hello")
+	console.log("hi")
 })
 
 // if request does not match, return React's index.html file
