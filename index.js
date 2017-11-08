@@ -1,22 +1,28 @@
 const express = require('express');
-const path = require('path')
+const path = require('path');
+const bodyParser = require('body-parser');
 const app = express();
 
-// Use static file from the React app
+// Serve static files from the React app
 app.use(express.static(path.join(__dirname, 'client/build')));
 
-app.get('/main', (req,res) => {
-	res.json("hello")
-	console.log("hi")
+app.use(bodyParser.urlencoded({ extended: true}));
+
+var db
+
+const MongoClient = require('mongodb').MongoClient
+
+MongoClient.connect('mongodb://Recipe:recipebox@ds125914.mlab.com:25914/ayumi', (err, database) => {
+  if (err) return console.log(err)
+  db = database
+  app.listen(4000, () => {
+    console.log('listening on 4000')
+  })
 })
 
-// if request does not match, return React's index.html file
-app.get('*', (req, res) => {
-	res.sendFile(path.join(__dirname + '/client/build/index.html'));
+app.get('/result', (req, res) => {
+	db.collection('recipe').find().toArray((err, results) => {
+    if(err) return console.log("no recipe");
+    res.json({ results });
 });
-
-app.listen(3000, () => {
-	console.log('Listening on port 3000');
 });
-
-module.exports = app;
