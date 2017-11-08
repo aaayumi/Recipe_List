@@ -5,7 +5,7 @@ const app = express();
 // Use static file from the React app
 app.use(express.static(path.join(__dirname, 'client/build')));
 
-app.get('/', (req,res) => {
+app.get('/main', (req,res) => {
 	res.json("hello")
 	console.log("hi")
 })
